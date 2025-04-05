@@ -1,38 +1,53 @@
 <template>
-	<view class="bg-white h-full overflow-y-auto rounded-lg shadow-md">
-		<!-- 列表标题 -->
-		<view class="p-30rpx bg-primary text-white font-bold text-32rpx rounded-t-lg flex items-center">
-			<view class="i-lucide-map-pin mr-10rpx"></view>
-			<text>附近位置</text>
-			<text class="text-24rpx ml-20rpx font-normal">{{ locations.length }}个结果</text>
-		</view>
-		
+	<view :class="['bg-gray-50 overflow-auto pt-100rpx', $isH5 ? 'h-[calc(100vh-100rpx-50px)]' : 'h-[calc(100vh-100rpx)]']">
 		<!-- 列表内容 -->
-		<view class="p-20rpx divide-y divide-gray-100" v-if="locations.length > 0">
-			<view class="py-20rpx px-10rpx hover:bg-gray-50 transition-colors duration-200 rounded-lg" 
+		<view class="p-30rpx space-y-30rpx" v-if="locations.length > 0">
+			<view class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200" 
 				v-for="(item, index) in locations" :key="index" @tap="onItemTap(item)">
-				<view class="flex items-center">
-					<!-- 位置图标 -->
-					<view class="w-60rpx h-60rpx rounded-full bg-primary flex items-center justify-center mr-20rpx flex-shrink-0">
-						<text class="text-white text-24rpx font-bold">{{ index + 1 }}</text>
+				<!-- 地点图片 -->
+				<view class="h-300rpx w-full rounded-t-lg bg-gray-200 overflow-hidden">
+					<image :src="item.cover || '/static/icon/default-place.png'" mode="aspectFill" class="w-full h-full"/>
+				</view>
+				
+				<view class="p-20rpx">
+					<!-- 标题和评分 -->
+					<view class="flex items-center justify-between mb-10rpx">
+						<view class="flex items-center">
+						<text class="mr-10rpx">{{ item.category === 1 ? '🥬' : item.category === 2 ? '🐟' : item.category === 3 ? '🍎' : item.category === 4 ? '🍄' : '☘️' }}</text>
+						<text class="text-32rpx text-gray-800 font-bold">{{ item.name }}</text>
+					</view>
+						<view class="flex items-center">
+							<view v-for="i in 3" :key="i" class="w-24rpx h-24rpx mx-2rpx">
+								<view :class="[i <= Math.floor(item.difficulty || 0) ? 'bg-primary-500' : 'bg-gray-300', 'rounded-full w-full h-full']"></view>
+							</view>
+							<text class="ml-10rpx text-24rpx text-gray-500">{{ item.difficulty || '0.0' }}/3.0</text>
+						</view>
 					</view>
 					
-					<!-- 位置信息 -->
-					<view class="flex-1 mr-20rpx">
-						<text class="block text-30rpx text-gray-800 font-medium mb-10rpx">{{ item.name }}</text>
-						<view class="flex items-center text-24rpx text-gray-400 mb-10rpx">
-							<view class="i-lucide-map-pin w-30rpx h-30rpx mr-5rpx"></view>
-							<text>{{ item.address }}</text>
-						</view>
-						<view class="mt-10rpx">
-							<text class="text-20rpx text-primary bg-primary/10 px-12rpx py-4rpx rounded-full">{{ item.category || '未分类' }}</text>
+					<!-- 地址信息 -->
+					<view class="flex items-center text-xs text-comet-400 mb-15rpx">
+						<view class="i-lucide-map-pin w-28rpx h-28rpx mr-10rpx"></view>
+						<text class="flex-1">{{ item.address }}</text>
+					</view>
+
+					<!-- 特产信息 -->
+					<view class="flex flex-wrap gap-10rpx mb-15rpx">
+						<view v-for="(tag, tagIndex) in item.specialty" :key="tagIndex"
+							class="px-15rpx py-5rpx bg-primary-50 rounded-sm text-xs">
+							<text class="text-24rpx text-primary-600">{{ tag }}</text>
 						</view>
 					</view>
 					
-					<!-- 距离信息 -->
-					<view class="bg-gray-100 px-20rpx py-10rpx rounded-full text-24rpx text-gray-600 flex items-center">
-						<view class="i-lucide-navigation w-24rpx h-24rpx mr-5rpx"></view>
-						<text>{{ item.distance }}km</text>
+					<!-- 底部信息 -->
+					<view class="flex items-center justify-between mt-15rpx text-comet-400">
+						<view class="flex items-center mr-20rpx">
+							<view class="i-lucide-calendar w-28rpx h-28rpx mr-8rpx"></view>
+							<text class="text-24rpx">{{ item.season || '全年' }}</text>
+						</view>
+						<view class="flex items-center text-24rpx ">
+							<view class="i-lucide-navigation w-28rpx h-28rpx mr-8rpx"></view>
+							<text>{{ item.distance || '未知' }}km</text>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -47,18 +62,9 @@
 </template>
 
 <style>
-.bg-primary {
-	background-color: #4CAF50;
-}
-
-.text-primary {
-	color: #4CAF50;
-}
 </style>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
-
 const props = defineProps({
 	locations: {
 		type: Array,

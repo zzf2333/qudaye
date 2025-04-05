@@ -2,7 +2,6 @@ import { createSSRApp } from 'vue'
 import App from './App.vue'
 import pinia from './store'
 import config from './config'
-import uviewPlus from 'uview-plus'
 
 import 'uno.css'
 
@@ -10,7 +9,7 @@ export function createApp() {
 	const app = createSSRApp(App)
 
 	// 挂载 Pinia
-	app.use(uviewPlus).use(pinia)
+	app.use(pinia)
 
 	// 挂载全局配置
 	app.config.globalProperties.$config = config

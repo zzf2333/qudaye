@@ -1,15 +1,15 @@
 <template>
 	<drawer :visible="innerVisible" title="标签筛选" @update:visible="handleVisibleChange">
-		<scroll-view scroll-y class="p-[20rpx] px-[30rpx]">
-			<view v-for="category in categories" :key="category.id" class="mb-[40rpx]">
-				<view class="text-base c-title mb-[30rpx]">{{ category.name }}</view>
+		<scroll-view scroll-y class="py-6">
+			<view v-for="category in categories" :key="category.id" class="mb-10 px-4">
+				<view class="text-xs c-comet-400 mb-3">{{ category.name }}</view>
 				<view class="flex flex-wrap gap-[20rpx]">
 					<view
 						v-for="tag in category.tags"
 						:key="tag.id"
 						:class="[
-							'px-4 py-2 text-xs bg-block rounded-md text-block-active',
-							{ 'bg-block-active text-white': selectedTags.includes(tag.id) }
+							'px-4 py-2 text-xs bg-block rounded-md bg-comet-50',
+							{ 'bg-comet-600 text-white': selectedTags.includes(tag.id) }
 						]"
 						@tap="toggleTag(tag.id)"
 					>

@@ -16,9 +16,5 @@ export default defineConfig(async () => {
 				'@': '/src'
 			}
 		},
-		// 配置 uView 组件解析
-		compilerOptions: {
-			isCustomElement: (tag) => /^up-/.test(tag)
-		}
 	}
 })

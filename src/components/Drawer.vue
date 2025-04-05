@@ -4,8 +4,8 @@
 		<view :class="['drawer-content', { 'slide-out': isClosing }]" @animationend="onAnimationEnd">
 			<!-- 抽屉头部 -->
 			<view class="drawer-header">
-				<text class="title">{{ title }}</text>
-				<view class="i-lucide-x w-40rpx h-40rpx" @tap="onClose"></view>
+				<text class="title c-comet-600">{{ title }}</text>
+				<view class="i-lucide-x w-40rpx h-40rpx c-comet-600" @tap="onClose"></view>
 			</view>
 
 			<!-- 抽屉内容区域 -->

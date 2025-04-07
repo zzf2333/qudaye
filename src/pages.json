@@ -17,7 +17,8 @@
 		{
 			"path": "pages/mine/mine",
 			"style": {
-				"navigationBarTitleText": "我的"
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
 			}
 		}
 	],
@@ -47,6 +48,9 @@
 		"backgroundColor": "#F8F8F8"
 	},
 	"easycom": {
-		"autoscan": true
+		"autoscan": true,
+		"custom": {
+			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+		}
 	}
 }

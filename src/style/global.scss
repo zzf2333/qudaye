@@ -1,0 +1,13 @@
+/* 全局样式 */
+@import './components.scss';
+
+textarea {
+	width: 100%;
+	box-sizing: border-box;
+    resize: none;
+}
+
+::v-deep .uni-input-placeholder, ::v-deep .uni-textarea-placeholder {
+    color: #b7b6c3 !important;
+    font-size: 13px;
+}

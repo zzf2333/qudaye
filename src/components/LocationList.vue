@@ -5,41 +5,39 @@
 			<view class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200" 
 				v-for="(item, index) in locations" :key="index" @tap="onItemTap(item)">
 				<!-- 地点图片 -->
-				<view class="h-300rpx w-full rounded-t-lg bg-gray-200 overflow-hidden">
+				<view class="h-300rpx w-full rounded-t-lg bg-gray-200 overflow-hidden relative">
 					<image :src="item.cover || '/static/icon/default-place.png'" mode="aspectFill" class="w-full h-full"/>
+					<!-- 特产信息 -->
+					<view class="absolute bottom-10rpx right-10rpx flex flex-wrap gap-10rpx justify-end max-w-[70%]">
+						<view v-for="(tag, tagIndex) in item.specialty" :key="tagIndex"
+							class="px-10rpx py-5rpx bg-primary-500 bg-opacity-50 rounded-sm">
+							<text class="text-xs text-white">{{ tag }}</text>
+						</view>
+					</view>
 				</view>
 				
 				<view class="p-20rpx">
 					<!-- 标题和评分 -->
 					<view class="flex items-center justify-between mb-10rpx">
 						<view class="flex items-center">
-						<text class="mr-10rpx">{{ item.category === 1 ? '🥬' : item.category === 2 ? '🐟' : item.category === 3 ? '🍎' : item.category === 4 ? '🍄' : '☘️' }}</text>
-						<text class="text-32rpx text-gray-800 font-bold">{{ item.name }}</text>
-					</view>
+							<text class="mr-10rpx">{{ getCategoryEmoji(item.category) }}</text>
+							<text class="text-base text-comet-800 font-bold">{{ item.name }}</text>
+						</view>
 						<view class="flex items-center">
 							<view v-for="i in 3" :key="i" class="w-24rpx h-24rpx mx-2rpx">
-								<view :class="[i <= Math.floor(item.difficulty || 0) ? 'bg-primary-500' : 'bg-gray-300', 'rounded-full w-full h-full']"></view>
+								<view :class="[i <= Math.floor(item.difficulty || 0) ? 'bg-primary-500' : 'bg-comet-100', 'rounded-full w-full h-full']"></view>
 							</view>
-							<text class="ml-10rpx text-24rpx text-gray-500">{{ item.difficulty || '0.0' }}/3.0</text>
 						</view>
 					</view>
 					
 					<!-- 地址信息 -->
-					<view class="flex items-center text-xs text-comet-400 mb-15rpx">
+					<view class="flex items-center text-xs text-comet-300 mb-15rpx">
 						<view class="i-lucide-map-pin w-28rpx h-28rpx mr-10rpx"></view>
 						<text class="flex-1">{{ item.address }}</text>
 					</view>
 
-					<!-- 特产信息 -->
-					<view class="flex flex-wrap gap-10rpx mb-15rpx">
-						<view v-for="(tag, tagIndex) in item.specialty" :key="tagIndex"
-							class="px-15rpx py-5rpx bg-primary-50 rounded-sm text-xs">
-							<text class="text-24rpx text-primary-600">{{ tag }}</text>
-						</view>
-					</view>
-					
 					<!-- 底部信息 -->
-					<view class="flex items-center justify-between mt-15rpx text-comet-400">
+					<view class="flex items-center justify-between mt-15rpx text-comet-300">
 						<view class="flex items-center mr-20rpx">
 							<view class="i-lucide-calendar w-28rpx h-28rpx mr-8rpx"></view>
 							<text class="text-24rpx">{{ item.season || '全年' }}</text>
@@ -65,6 +63,8 @@
 </style>
 
 <script setup>
+import { categories } from '@/config/categories'
+
 const props = defineProps({
 	locations: {
 		type: Array,
@@ -76,5 +76,10 @@ const emit = defineEmits(['select'])
 
 const onItemTap = (item) => {
 	emit('select', item)
+}
+
+const getCategoryEmoji = (category) => {
+	const found = categories.find(c => c.value === category)
+	return found ? found.emoji : '☘️'
 }
 </script>

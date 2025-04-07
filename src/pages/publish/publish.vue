@@ -1,215 +1,160 @@
 <template>
-	<view class="relative bg-gray-50 min-h-screen">
-		<!-- 顶部导航栏 -->
-		<view class="fixed top-0 left-0 right-0 z-10 bg-white shadow-sm">
-			<view class="flex items-center justify-between h-100rpx px-30rpx text-32rpx">
-				<view class="text-gray-600 text-32rpx"></view>
-				<view class="text-md">添加打野点位</view>
-				<view class="text-primary-500 font-medium" @click="submitForm">保存</view>
-			</view>
-		</view>
-		
+	<view class="relative bg-white min-h-screen">
+		<Header
+			title="添加打野点位"
+			rightIcon="i-lucide-check"
+			@rightClick="submitForm"
+		/>
+
 		<!-- 表单内容区 -->
-		<view class="pt-100rpx pb-120rpx px-30rpx">
-			<form @submit="submitForm" class="space-y-40rpx">
+		<view class="pt-140rpx pb-120rpx px-30rpx">
+			<uni-forms ref="formRef" :model="formData" :rules="rules" class="space-y-40rpx" label-position="top">
 				<!-- 名称输入 -->
-				<view class="space-y-20rpx">
-					<view class="text-48rpx font-light text-gray-500">给它一个名称...</view>
-					<input 
-						class="w-full text-40rpx py-20rpx border-b border-gray-300 focus:border-primary-500 outline-none transition-colors" 
-						v-model="formData.title" 
-						placeholder="请输入名称" 
-					/>
-					<text class="text-red-500 text-24rpx" v-if="errors.title">{{ errors.title }}</text>
-				</view>
+				<uni-forms-item name="title" class="flex flex-col mb-4" label="名称">
+					<input type="text" id="title" class="input" v-model="formData.title" placeholder="请输入名称" />
+				</uni-forms-item>
 
 				<!-- 位置选择 -->
-				<view class="space-y-20rpx">
-					<text class="text-32rpx font-medium">位置</text>
-					<view 
-						class="flex items-center bg-white rounded-lg p-20rpx shadow-sm" 
-						@click="openMap"
-					>
+				<uni-forms-item name="location" class="flex flex-col mb-4" label="位置">
+					<view class="input flex items-center justify-center" @click="openMap">
 						<view class="flex-1">
-							<input 
-								class="w-full text-28rpx text-gray-700 outline-none" 
-								v-model="formData.address" 
-								placeholder="点击选择位置" 
-								disabled 
-							/>
+							<input id="location" class="w-full outline-none text-sm" v-model="formData.address" placeholder="点击选择位置" disabled />
 						</view>
-						<view class="i-lucide-map-pin text-primary-500 w-40rpx h-40rpx"></view>
+						<view class="i-lucide-map-pin text-comet-500 w-36rpx h-36rpx"></view>
 					</view>
-					<text class="text-red-500 text-24rpx" v-if="errors.location">{{ errors.location }}</text>
-				</view>
+				</uni-forms-item>
 
 				<!-- 描述信息 -->
-				<view class="space-y-20rpx">
-					<text class="text-32rpx font-medium">描述</text>
-					<textarea 
-						class="w-full h-200rpx bg-white rounded-lg p-20rpx text-28rpx shadow-sm" 
-						v-model="formData.description" 
-						placeholder="请输入描述信息" 
-					/>
-					<text class="text-red-500 text-24rpx" v-if="errors.description">{{ errors.description }}</text>
-				</view>
+				<uni-forms-item name="description" class="flex flex-col mb-4" label="描述">
+					<textarea id="description" class="h-200rpx input w-full box-border px-3 py-2" v-model="formData.description" placeholder="请输入描述信息" />
+				</uni-forms-item>
 
 				<!-- 图片上传 -->
-				<view class="space-y-20rpx">
-					<text class="text-32rpx font-medium">图片</text>
-					<view class="bg-white rounded-lg p-30rpx shadow-sm">
-						<view class="flex flex-wrap gap-20rpx">
-							<view 
-								v-for="(item, index) in formData.images" 
-								:key="index" 
-								class="relative w-150rpx h-150rpx rounded-lg overflow-hidden"
-							>
-								<image :src="item.url" mode="aspectFill" class="w-full h-full" />
-								<view 
-									class="absolute top-10rpx right-10rpx w-40rpx h-40rpx bg-black bg-opacity-50 rounded-full flex items-center justify-center" 
-									@click="deletePic(index)"
-								>
-									<text class="text-white text-24rpx">×</text>
-								</view>
-							</view>
-							<view 
-								v-if="formData.images.length < 6" 
-								class="w-150rpx h-150rpx rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center" 
-								@click="chooseImage"
-							>
-								<view class="i-lucide-camera text-gray-400 w-60rpx h-60rpx"></view>
-							</view>
-						</view>
-						<view class="text-center text-gray-400 text-24rpx mt-20rpx">添加封面照片</view>
-					</view>
-				</view>
+				<uni-forms-item name="images" class="flex flex-col mb-4" label="图片">
+					<ImageUploader v-model="formData.images" :max-count="6" />
+				</uni-forms-item>
 
 				<!-- 可以做什么 -->
-				<view class="space-y-20rpx">
-					<text class="text-32rpx font-medium">这里可以做什么？</text>
+				<uni-forms-item name="category" class="flex flex-col mb-4" label="分类">
 					<view class="flex flex-wrap gap-20rpx">
-						<view class="w-100rpx h-100rpx bg-gray-200 rounded-lg flex flex-col items-center justify-center">
-							<view class="i-lucide-backpack text-gray-600 w-40rpx h-40rpx"></view>
-						</view>
-						<view class="w-100rpx h-100rpx bg-gray-200 rounded-lg flex flex-col items-center justify-center">
-							<view class="i-lucide-bike text-gray-600 w-40rpx h-40rpx"></view>
-						</view>
-						<view class="w-100rpx h-100rpx bg-gray-200 rounded-lg flex flex-col items-center justify-center">
-							<view class="i-lucide-fish text-gray-600 w-40rpx h-40rpx"></view>
-						</view>
-						<view class="w-100rpx h-100rpx bg-gray-200 rounded-lg flex flex-col items-center justify-center">
-							<view class="i-lucide-running text-gray-600 w-40rpx h-40rpx"></view>
-						</view>
-						<view class="w-100rpx h-100rpx bg-gray-200 rounded-lg flex flex-col items-center justify-center">
-							<view class="i-lucide-flame text-gray-600 w-40rpx h-40rpx"></view>
-						</view>
+						<uni-tooltip v-for="item in categories" :key="item.value" :content="item.description" placement="top">
+							<view @click="formData.category = item.value"
+								:class="['py-3 px-4 flex-1 rounded-lg',
+								formData.category === item.value ? 'bg-comet-400' : 'bg-comet-100']">
+								<text>{{ item.emoji }}</text>
+							</view>
+						</uni-tooltip>
 					</view>
-				</view>
+				</uni-forms-item>
 
 				<!-- 标签选择 -->
-				<view class="space-y-20rpx">
-					<text class="text-32rpx font-medium">标签</text>
-					<view class="flex flex-wrap gap-20rpx">
-						<view 
-							v-for="tag in availableTags" 
-							:key="tag.value"
-							:class="['px-30rpx py-15rpx rounded-full text-28rpx transition-colors', 
-								formData.tags.includes(tag.value) ? 
-								'bg-primary-500 text-white' : 'bg-gray-200 text-gray-600']"
-							@click="toggleTag(tag.value)"
-						>
-							{{ tag.text }}
-						</view>
-					</view>
-				</view>
-
-				<!-- 分类选择 -->
-				<view class="space-y-20rpx">
-					<text class="text-32rpx font-medium">分类</text>
-					<radio-group class="flex flex-wrap gap-20rpx" @change="onCategoryChange">
-						<label 
-							v-for="item in categories" 
-							:key="item.value" 
-							:class="['flex items-center px-30rpx py-15rpx rounded-full transition-colors', 
-								formData.category === item.value ? 
-								'bg-primary-500 text-white' : 'bg-gray-200 text-gray-600']"
-						>
-							<radio 
-								:value="item.value" 
-								:checked="formData.category === item.value" 
-								class="transform scale-0 absolute"
-							/>
-							<text>{{ item.label }}</text>
-						</label>
-					</radio-group>
-					<text class="text-red-500 text-24rpx" v-if="errors.category">{{ errors.category }}</text>
-				</view>
+				<uni-forms-item name="tags" class="flex flex-col mb-4" label="标签">
+					<TagInput v-model="formData.tags" placeholder="输入标签后按回车或点击添加" :max-tags="6" />
+				</uni-forms-item>
 
 				<!-- 难度评级 -->
-				<view class="space-y-20rpx">
-					<text class="text-32rpx font-medium">难度</text>
-					<view class="flex items-center">
-						<text 
-							v-for="n in 5" 
-							:key="n" 
-							:class="['text-48rpx mr-10rpx', n <= formData.difficulty ? 'text-yellow-500' : 'text-gray-300']"
-							@click="formData.difficulty = n"
-						>
-							★
-						</text>
+				<uni-forms-item name="difficulty" class="flex flex-col mb-4" label="难度">
+					<view class="flex flex-wrap gap-20rpx">
+						<view v-for="level in difficultyLevels" :key="level.value"
+							@click="formData.difficulty = level.value"
+							:class="['py-3 px-4 rounded-lg transition-colors cursor-pointer',
+							formData.difficulty === level.value ? 'bg-comet-400 text-white' : 'bg-gray-200 text-gray-600']">
+						<text>{{ level.label }}</text>
+						</view>
 					</view>
-				</view>
+				</uni-forms-item>
 
 				<!-- 季节选择 -->
-				<view class="space-y-20rpx">
-					<text class="text-32rpx font-medium">季节</text>
-					<checkbox-group class="flex flex-wrap gap-20rpx" @change="onSeasonsChange">
-						<label 
-							v-for="item in seasonOptions" 
-							:key="item.value" 
-							:class="['flex items-center px-30rpx py-15rpx rounded-full transition-colors', 
-								formData.seasons.includes(item.value) ? 
-								'bg-primary-500 text-white' : 'bg-gray-200 text-gray-600']"
-						>
-							<checkbox 
-								:value="item.value" 
-								:checked="formData.seasons.includes(item.value)" 
-								class="transform scale-0 absolute"
-							/>
+				<uni-forms-item name="seasons" class="flex flex-col mb-4" label="季节">
+					<view class="flex flex-wrap gap-20rpx">
+						<view v-for="item in seasonOptions" :key="item.value"
+							@click="formData.season = item.value"
+							:class="['py-3 px-4 rounded-lg transition-colors cursor-pointer',
+							formData.season === item.value ? 'bg-comet-400 text-white' : 'bg-gray-200 text-gray-600']">
 							<text>{{ item.label }}</text>
-						</label>
-					</checkbox-group>
-					<text class="text-red-500 text-24rpx" v-if="errors.seasons">{{ errors.seasons }}</text>
-				</view>
+						</view>
+					</view>
+				</uni-forms-item>
 
 				<!-- 物产种类 -->
-				<view class="space-y-20rpx">
-					<text class="text-32rpx font-medium">物产种类</text>
-					<checkbox-group class="flex flex-wrap gap-20rpx" @change="onProductTypesChange">
-						<label 
-							v-for="item in productTypeOptions" 
-							:key="item.value" 
-							:class="['flex items-center px-30rpx py-15rpx rounded-full transition-colors', 
-								formData.productTypes.includes(item.value) ? 
-								'bg-primary-500 text-white' : 'bg-gray-200 text-gray-600']"
-						>
-							<checkbox 
-								:value="item.value" 
-								:checked="formData.productTypes.includes(item.value)" 
-								class="transform scale-0 absolute"
-							/>
-							<text>{{ item.label }}</text>
-						</label>
-					</checkbox-group>
-					<text class="text-red-500 text-24rpx" v-if="errors.productTypes">{{ errors.productTypes }}</text>
-				</view>
-			</form>
+				<uni-forms-item name="productTypes" class="flex flex-col mb-4" label="物产种类">
+					<TagInput v-model="formData.productTypes" placeholder="输入标签后按回车或点击添加" :max-tags="8" />
+				</uni-forms-item>
+			</uni-forms>
 		</view>
 	</view>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { categories, seasonOptions, productTypeOptions } from '@/config/categories'
+import ImageUploader from '@/components/ImageUploader.vue'
+import TagInput from '@/components/TagInput.vue'
+import Header from '@/components/Header.vue'
+
+// 表单校验规则
+const rules = {
+  title: {
+    rules: [{
+      required: true,
+      errorMessage: '请输入名称'
+    }]
+  },
+  location: {
+    rules: [{
+      required: true,
+      errorMessage: '请选择位置'
+    }]
+  },
+  description: {
+    rules: [{
+      required: true,
+      errorMessage: '请输入描述'
+    }]
+  },
+  category: {
+    rules: [{
+      required: true,
+      errorMessage: '请选择分类'
+    }]
+  },
+  season: {
+    rules: [{
+      required: true,
+      errorMessage: '请选择季节'
+    }]
+  },
+  productTypes: {
+    rules: [{
+      required: true,
+      errorMessage: '请选择物产种类'
+    }]
+  },
+  images: {
+    rules: [{
+      required: true,
+      errorMessage: '请上传至少一张图片'
+    }]
+  },
+  tags: {
+    rules: [{
+      required: true,
+      errorMessage: '请选择至少一个标签'
+    }]
+  },
+  difficulty: {
+    rules: [{
+      required: true,
+      errorMessage: '请选择难度等级'
+    }]
+  }
+}
+
+const difficultyLevels = [
+  { label: '低', value: 1 },
+  { label: '中', value: 2 },
+  { label: '高', value: 3 }
+]
 
 const formData = ref({
 	title: '',
@@ -221,9 +166,9 @@ const formData = ref({
 		longitude: ''
 	},
 	tags: [],
-	category: '',
-	difficulty: 3,
-	seasons: [],
+	category: 'mountain_delicacy',
+	difficulty: 1, // 默认值改为 1
+	season: 'spring', // 默认值设为春季
 	productTypes: []
 })
 
@@ -235,35 +180,6 @@ const errors = reactive({
 	seasons: '',
 	productTypes: ''
 })
-
-const availableTags = [
-	{ text: '野菜', value: 'wild_vegetable' },
-	{ text: '水产', value: 'aquatic' },
-	{ text: '山珍', value: 'mountain_delicacy' },
-	{ text: '药材', value: 'herb' }
-]
-
-const categories = [
-	{ label: '野菜', value: 'wild_vegetable' },
-	{ label: '水产', value: 'aquatic' },
-	{ label: '山珍', value: 'mountain_delicacy' },
-	{ label: '药材', value: 'herb' }
-]
-
-const seasonOptions = [
-	{ label: '春', value: 'spring' },
-	{ label: '夏', value: 'summer' },
-	{ label: '秋', value: 'autumn' },
-	{ label: '冬', value: 'winter' }
-]
-
-const productTypeOptions = [
-	{ label: '叶菜类', value: 'leaf' },
-	{ label: '根茎类', value: 'root' },
-	{ label: '菌类', value: 'fungus' },
-	{ label: '果实类', value: 'fruit' },
-	{ label: '水生类', value: 'aquatic' }
-]
 
 // 返回上一页
 const goBack = () => {
@@ -290,96 +206,21 @@ const openMap = () => {
 	})
 }
 
-// 选择图片
-const chooseImage = () => {
-	uni.chooseImage({
-		count: 6 - formData.value.images.length,
-		sizeType: ['compressed'],
-		sourceType: ['album', 'camera'],
-		success: (res) => {
-			const newImages = res.tempFilePaths.map(url => ({
-				url,
-				status: 'uploading',
-				message: '上传中'
-			}))
-			formData.value.images.push(...newImages)
-		}
-	})
-}
-
-// 删除图片
-const deletePic = (index) => {
-	formData.value.images.splice(index, 1)
-}
-
-// 切换标签
-const toggleTag = (value) => {
-	const index = formData.value.tags.indexOf(value)
-	if (index === -1) {
-		formData.value.tags.push(value)
-	} else {
-		formData.value.tags.splice(index, 1)
-	}
-}
-
-// 分类变更
-const onCategoryChange = (e) => {
-	formData.value.category = e.detail.value
-	errors.category = ''
-}
-
-// 季节变更
-const onSeasonsChange = (e) => {
-	formData.value.seasons = e.detail.value
-	errors.seasons = ''
-}
-
-// 物产种类变更
-const onProductTypesChange = (e) => {
-	formData.value.productTypes = e.detail.value
-	errors.productTypes = ''
-}
-
 // 表单验证
-const validateForm = () => {
-	let isValid = true
+const formRef = ref(null)
 
-	if (!formData.value.title) {
-		errors.title = '请输入名称'
-		isValid = false
+const validateForm = async () => {
+	try {
+		await formRef.value.validate()
+		return true
+	} catch (e) {
+		return false
 	}
-
-	if (!formData.value.location.latitude || !formData.value.location.longitude) {
-		errors.location = '请选择位置'
-		isValid = false
-	}
-
-	if (!formData.value.description) {
-		errors.description = '请输入描述'
-		isValid = false
-	}
-
-	if (!formData.value.category) {
-		errors.category = '请选择分类'
-		isValid = false
-	}
-
-	if (formData.value.seasons.length === 0) {
-		errors.seasons = '请选择季节'
-		isValid = false
-	}
-
-	if (formData.value.productTypes.length === 0) {
-		errors.productTypes = '请选择物产种类'
-		isValid = false
-	}
-
-	return isValid
 }
 
 // 提交表单
-const submitForm = () => {
-	if (validateForm()) {
+const submitForm = async () => {
+	if (await validateForm()) {
 		// TODO: 实现表单提交逻辑
 		uni.showToast({
 			title: '发布成功',
@@ -389,17 +230,4 @@ const submitForm = () => {
 }
 </script>
 
-<style>
-/* 自定义样式补充 */
-.checkbox-group .checkbox,
-.radio-group .radio {
-	position: relative;
-}
-
-/* 隐藏原生单选框和复选框 */
-radio,
-checkbox {
-	position: absolute;
-	opacity: 0;
-}
-</style>
+<style lang="scss"></style>

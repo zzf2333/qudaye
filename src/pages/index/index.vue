@@ -1,9 +1,12 @@
 <template>
 	<view class="relative">
-		<!-- 标题 -->
-		<view class="fixed w-full z-1">
-			<view class="flex bg-white h-100rpx justify-between items-center shadow-lg c-comet-600">
-				<view class="i-lucide-filter ml-2 w-36rpx h-36rpx cursor-pointer" @tap="showFilterDrawer"></view>
+		<Header
+			leftIcon="i-lucide-filter"
+			:rightIcon="viewMode !== 'map' ? 'i-lucide-map' : 'i-lucide-layout-list'"
+			@leftClick="showFilterDrawer"
+			@rightClick="toggleViewMode"
+		>
+			<template #center>
 				<view v-if="viewMode === 'map'" class="z-1 text-xs">附近有 {{ locationList.length }} 个点位</view>
 				<view v-else class="flex-1 mx-4">
 					<view class="flex items-center rounded-full px-4 py-2">
@@ -11,9 +14,8 @@
 						<input type="text" v-model="searchQuery" placeholder="搜索物质名称" class="flex-1 text-xs outline-none" />
 					</view>
 				</view>
-				<view :class="[viewMode !== 'map' ?'i-lucide-map' : 'i-lucide-layout-list', 'mr-2 w-36rpx h-36rpx']" @click="toggleViewMode"></view>
-			</view>
-		</view>
+			</template>
+		</Header>
 		
 		<!-- 筛选抽屉 -->
 		<filter-drawer v-model:visible="filterVisible" :selected-filters="selectedFilters" @confirm="onFilterConfirm" />
@@ -59,12 +61,13 @@
 import { ref, onMounted, computed } from 'vue'
 import LocationList from '@/components/LocationList.vue'
 import FilterDrawer from '@/components/FilterDrawer.vue'
+import Header from '@/components/Header.vue'
 import {calculateDistance} from '@/utils/distance';
 
 const filterVisible = ref(false)
 // 已选中的筛选标签
 const selectedFilters = ref([])
-const viewMode = ref('map');
+const viewMode = ref('list');
 // 加载状态
 const isLoading = ref(false);
 // 搜索关键词
@@ -279,7 +282,7 @@ const updateMapMarkers = (locations) => {
 			longitude: loc.longitude,
 			iconPath: '/static/icon/pin-1.png',
 			label: {
-				content: loc.category === 1 ? '🥬' : loc.category === 2 ? '🐟' : loc.category === 3 ? '🍎' : loc.category === 4 ? '🍄' : '☘️',
+				content: loc.category === 1 ? '🥬' : loc.category === 2 ? '🐟' : loc.category === 3 ? '🍎' : loc.category === 4 ? '🍄' : '🌿',
 				color: '#333333',
 				fontSize: 32,
 				anchorX: -12,

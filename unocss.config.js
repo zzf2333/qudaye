@@ -27,7 +27,7 @@ export default {
 				'900': '#005547',
 				'950': '#003029',
 			},
-			comet:{
+			'comet':{
 				'50': '#f7f7f8',
 				'100': '#efeef0',
 				'200': '#d9d8df',
@@ -46,6 +46,7 @@ export default {
 		{
 			'border-base': 'border border-gray-500_10',
 			'center': 'flex justify-center items-center',
+			'input': 'rounded-sm bg-comet-50 p-2 shadow-sm c-comet-600 text-sm',
 		},
 	],
 

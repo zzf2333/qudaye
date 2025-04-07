@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, onMounted, onUnmounted, watch } from 'vue';
 
 const props = defineProps({
     activityData: {
@@ -41,9 +41,12 @@ const initCanvas = () => {
 // 计算坐标
 const getCoordinates = computed(() => {
     const points = props.activityData;
+    if (!points || points.length === 0) return [];
+    
     const width = 300;
     const height = 48;
-    const maxValue = Math.max(...points.map(p => p.value));
+    const maxValue = Math.max(...points.map(p => p.value)) || 0;
+    if (maxValue === 0) return [];
 
     return points.map((point, index) => {
         const x = (index / (points.length - 1)) * width;
@@ -57,6 +60,8 @@ const drawCurve = () => {
     if (!ctx.value) return;
     
     const coordinates = getCoordinates.value;
+    if (!coordinates || coordinates.length < 2) return;
+    
     const gradient = ctx.value.createLinearGradient(0, 0, 300, 0);
     gradient.addColorStop(0, 'rgba(0, 202, 157, 0.2)');
     gradient.addColorStop(1, 'rgba(0, 202, 157, 1)');
@@ -105,6 +110,13 @@ const draw = () => {
 
     animationFrameId = requestAnimationFrame(draw);
 };
+
+// 监听数据变化，触发重绘
+watch(() => props.activityData, (newVal) => {
+    if (ctx.value && newVal && newVal.length > 0) {
+        draw();
+    }
+}, { deep: true });
 
 onMounted(() => {
     initCanvas();

@@ -1,5 +1,5 @@
 <template>
-	<view :class="['bg-gray-50 overflow-auto pt-100rpx', $isH5 ? 'h-[calc(100vh-100rpx-50px)]' : 'h-[calc(100vh-100rpx)]']">
+	<view :class="['bg-gray-50 overflow-auto', $isH5 ? 'h-[calc(100vh-100rpx-50px)]' : 'h-[calc(100vh-100rpx)]']">
 		<!-- 列表内容 -->
 		<view class="p-30rpx space-y-30rpx" v-if="locations.length > 0">
 			<view class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200" 

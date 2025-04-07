@@ -44,8 +44,6 @@ export default {
 	},
 	shortcuts: [
 		{
-			'border-base': 'border border-gray-500_10',
-			'center': 'flex justify-center items-center',
 			'input': 'rounded-sm bg-comet-50 p-2 shadow-sm c-comet-600 text-sm',
 		},
 	],

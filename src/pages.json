@@ -20,6 +20,13 @@
 				"navigationBarTitleText": "我的",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/detail/detail",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"tabBar": {
@@ -27,19 +34,23 @@
 		"selectedColor": "#3cc51f",
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
-		"list": [{
-			"pagePath": "pages/index/index",
-			"iconPath": "static/tabbar/map-normal.png",
-			"selectedIconPath": "static/tabbar/map-selected.png"
-		}, {
-			"pagePath": "pages/publish/publish",
-			"iconPath": "static/tabbar/discover-normal.png",
-			"selectedIconPath": "static/tabbar/discover-selected.png"
-		}, {
-			"pagePath": "pages/mine/mine",
-			"iconPath": "static/tabbar/profile-normal.png",
-			"selectedIconPath": "static/tabbar/profile-selected.png"
-		}]
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/map-normal.png",
+				"selectedIconPath": "static/tabbar/map-selected.png"
+			},
+			{
+				"pagePath": "pages/publish/publish",
+				"iconPath": "static/tabbar/discover-normal.png",
+				"selectedIconPath": "static/tabbar/discover-selected.png"
+			},
+			{
+				"pagePath": "pages/mine/mine",
+				"iconPath": "static/tabbar/profile-normal.png",
+				"selectedIconPath": "static/tabbar/profile-selected.png"
+			}
+		]
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

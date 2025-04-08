@@ -19,7 +19,7 @@ export function useLocations(options) {
         initialUserLocation // 可选：{ latitude, longitude } 用户初始位置标记
     } = options;
 
-    const isLoading = ref(false);
+    const isLoading = ref(true);
     const locationList = ref([]); // 带距离信息的位置列表数据
     const markers = ref([]); // 地图标记点
 
@@ -133,7 +133,7 @@ export function useLocations(options) {
                 isLoading.value = false;
                 console.log('Fetched locations:', locationsWithDistance.length);
                 resolve(locationsWithDistance); // Resolve the promise
-            }, 800);
+            }, 4000);
         });
     };
 

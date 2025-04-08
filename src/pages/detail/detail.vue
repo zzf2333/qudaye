@@ -1,7 +1,7 @@
 <template>
 	<view class="detail-page bg-gray-100 min-h-screen">
 		<!-- 主内容区域 -->
-		<view class="content-area pb-20rpx">
+		<view class="content-area">
 			<!-- 基本信息卡片 -->
 			<view class="bg-white shadow-md mb-4">
 				<!-- 地图预览 -->
@@ -55,7 +55,7 @@
 					<!-- 物产种类 -->
 					<view v-if="spotDetails.productTypes.length > 0" class="product-types flex flex-wrap gap-2 mb-3">
 						<view v-for="ptype in spotDetails.productTypes" :key="ptype"
-							class="bg-primary-100 text-primary-700 px-2 py-1 rounded text-xs">
+							class="bg-primary-50 text-primary-500 px-2 py-1 rounded text-xs">
 							{{ ptype }}
 						</view>
 					</view>
@@ -89,7 +89,7 @@
 					<!-- 标签 -->
 					<view v-if="spotDetails.tags.length > 0" class="tags flex flex-wrap gap-2 mb-3">
 						<view v-for="tag in spotDetails.tags" :key="tag"
-							class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">
+							class="text-primary-500 px-2 py-1 rounded text-xs">
 							#{{ tag }}
 						</view>
 					</view>
@@ -98,17 +98,17 @@
 					<text class="text-comet-400 text-sm block mb-3 mt-3">{{ spotDetails.description }}</text>
 
 					<!-- 去过的人 (占位) -->
-					<view class="visitors flex items-center text-sm text-comet-500 mb-4">
+					<!-- <view class="visitors flex items-center text-sm text-comet-500 mb-4">
 						<view class="flex -space-x-2 mr-2">
 							<view v-for="i in 5" :key="i" class="w-64 h-64 rounded-full bg-gray-300 border-2 border-white">
 							</view>
 						</view>
 						<text>+{{ spotDetails.visitorCount }} 人来过这里</text>
-					</view>
+					</view> -->
 
 					<!-- 签到按钮 (占位) -->
 					<button
-						class=" bg-primary-500 text-white w-full flex items-center justify-center rounded-lg text-sm  py-3 hover:bg-primary-600">
+						class=" bg-primary-500 text-white w-full flex items-center justify-center rounded-bs text-sm  py-2 hover:bg-primary-600">
 						<view class="i-lucide-navigation mr-1"></view>
 						去这里
 					</button>
@@ -121,13 +121,13 @@
 			<!-- 评论列表区域 -->
 			<view class="recommendations-card bg-white">
 				<view class="flex justify-between items-center mb-3 p-3">
-					<text class="text-lg font-bold">{{ spotDetails.recommendations.length }}条评论</text>
+					<text class="text-30 font-bold">{{ spotDetails.recommendations.length }}条评论</text>
 				</view>
 				<view class="comment-list space-y-4">
 					<!-- 使用 CommentItem 组件渲染评论 -->
-					<CommentItem v-for="comment in spotDetails.recommendations" :key="comment.id" :comment="comment" />
-					<!-- 模拟评论项 -->
-					<view v-if="!spotDetails.recommendations.length" class="text-gray-500 text-center py-4">暂无评论</view>
+					<CommentItem v-for="comment in spotDetails.recommendations" :key="comment.id" :comment="comment" mode="detail" />
+					<!-- 暂无评论展示 -->
+					<NoData v-if="!spotDetails.recommendations.length" text="暂无评论" />
 				</view>
 			</view>
 		</view>
@@ -140,6 +140,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import Header from '@/components/Header.vue';
 import CommentItem from '@/components/common/CommentItem.vue';
 import MapViewer from '@/components/common/MapViewer.vue'; // 导入 MapViewer
+import NoData from '@/components/NoData.vue';
 import { categories, seasonOptions, difficultyLevels } from '@/config/categories';
 
 const spotId = ref(null);
@@ -178,32 +179,7 @@ const spotDetails = ref({
 	rating: 4.5,
 	distance: 2.1,
 	visitorCount: 82,
-	recommendations: [
-		{
-			id: 1,
-			user: { name: '张三', avatar: 'https://via.placeholder.com/40/FFA500/FFFFFF?text=Z' },
-			rating: 5,
-			content: '非常棒的地方，下次还来！风景绝了！',
-			likes: 15,
-			createdAt: '2 小时前'
-		},
-		{
-			id: 2,
-			user: { name: '李四', avatar: 'https://via.placeholder.com/40/4682B4/FFFFFF?text=L' },
-			rating: 4,
-			content: '还不错，就是周末人有点多。带孩子玩挺好的。',
-			likes: 8,
-			createdAt: '1 天前'
-		},
-		{
-			id: 3,
-			user: { name: '王五', avatar: 'https://via.placeholder.com/40/32CD32/FFFFFF?text=W' },
-			rating: 3,
-			content: '一般般吧，蚊子有点多，记得带驱蚊水。',
-			likes: 2,
-			createdAt: '3 天前'
-		}
-	]
+	recommendations: []
 });
 
 // 计算属性，用于显示分类、难度和季节的标签

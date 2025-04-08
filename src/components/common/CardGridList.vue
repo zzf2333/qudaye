@@ -2,17 +2,14 @@
 	<view class="card-grid-list">
 		<view v-if="items && items.length > 0" :class="gridClass">
 			<component v-for="item in items" :key="item[keyProp]" :is="cardComponent" :item="item" />
-			<!-- Pass item data to the card component -->
 		</view>
-		<view v-else class="empty-state col-span-full text-center py-10 text-gray-400">
-			<!-- Ensure empty state spans full width if needed -->
-			{{ emptyText }}
-		</view>
+		<NoData v-else :text="emptyText" />
 	</view>
 </template>
 
 <script setup>
 import { defineProps, markRaw } from 'vue';
+import NoData from '../NoData.vue';
 // Note: For <component :is="...">, it's generally recommended to pass the actual component object.
 // If passing component name as string, ensure it's globally registered or locally imported and registered.
 // Passing the component object directly via props is often safer.

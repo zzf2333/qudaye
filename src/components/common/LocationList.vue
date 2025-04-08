@@ -51,10 +51,9 @@
 			</view>
 		</view>
 		
-		<!-- 空状态 -->
-		<view v-if="locations.length === 0" class="py-100rpx flex flex-col items-center justify-center text-gray-400">
-			<view class="i-lucide-map-off w-100rpx h-100rpx mb-20rpx"></view>
-			<text class="text-28rpx">暂无位置信息</text>
+		<!-- 骨架屏 -->
+		<view v-else class="p-30rpx space-y-30rpx">
+			<LocationSkeleton v-for="i in 3" :key="i" />
 		</view>
 	</view>
 </template>
@@ -64,6 +63,7 @@
 
 <script setup>
 import { categories } from '@/config/categories'
+import LocationSkeleton from '../skeleton/LocationSkeleton.vue'
 
 const props = defineProps({
 	locations: {

@@ -8,7 +8,7 @@
 				{{ tab.name }}
 				<!-- Active state indicator (underline) -->
 				<view v-if="modelValue === index"
-					class="active-indicator bg-primary-500 absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 rounded-full"
+					class="active-indicator bg-primary-500 absolute bottom-0 left-1/2 transform -translate-x-1/2 h-4 rounded-full"
 					:style="{ width: indicatorWidth }"></view>
 			</view>
 		</view>

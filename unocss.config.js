@@ -46,6 +46,9 @@ export default {
 		{
 			'input': 'rounded-sm bg-comet-50 p-2 shadow-sm c-comet-600 text-sm',
 		},
+		{
+			'absolute-center': 'fixed top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'
+		}
 	],
 
 	transformers: [

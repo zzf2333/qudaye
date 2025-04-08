@@ -41,18 +41,15 @@
 		</view>
 		
 		<!-- 列表视图 -->
-		<view v-else class="transition-all duration-300 ease-in-out pt-140rpx"> 
+		<view v-else class="transition-all duration-300 ease-in-out pt-100rpx relative"> 
 			<!-- Show loading indicator -->
-			<view v-if="isLoading" class="text-center py-10 text-gray-500">加载中...</view>
 			<location-list 
-				v-else
 				:locations="locationList"
 				:current-latitude="latitude" 
 				:current-longitude="longitude" 
 				@select="onLocationSelect" 
 			></location-list> <!-- Correctly closed tag -->
 		</view>
-		
 	</view>
 </template>
 

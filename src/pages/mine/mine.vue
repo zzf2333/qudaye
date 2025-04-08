@@ -15,7 +15,7 @@
 			<!-- 收藏列表插槽 -->
 			<template #tab-0>
 				<view class="content-container p-3">
-					<view v-if="isLoadingFavorites" class="text-center py-10 text-gray-400">加载收藏中...</view>
+					<Loading v-if="isLoadingFavorites" text="加载收藏中" />
 					<CardGridList 
 						v-else
 						:items="favoriteList"
@@ -28,7 +28,7 @@
 			<!-- 发布列表插槽 -->
 			<template #tab-1>
 				<view class="content-container p-3">
-					<view v-if="isLoadingPublished" class="text-center py-10 text-gray-400">加载发布中...</view>
+					<Loading v-if="isLoadingPublished" text="加载发布中" />
 					<CardGridList 
 						v-else
 						:items="publishedList"
@@ -41,7 +41,7 @@
 			<!-- 评论列表插槽 -->
 			<template #tab-2>
 				<view class="content-container p-3">
-					<view v-if="isLoadingComments" class="text-center py-10 text-gray-400">加载评论中...</view>
+					<Loading v-if="isLoadingComments" text="加载评论中" />
 					<view v-else class="space-y-3">
 						<CommentItem v-for="comment in commentList" :key="comment.id" :comment="comment" /> <!-- Use commentList from composable -->
 						<!-- Corrected empty state check with && -->
@@ -63,6 +63,7 @@ import UserProfileHeader from '@/components/common/UserProfileHeader.vue';
 import TabbedView from '@/components/common/TabbedView.vue'; 
 import CommentItem from '@/components/common/CommentItem.vue'; 
 import CardGridList from '@/components/common/CardGridList.vue'; 
+import Loading from '@/components/Loading.vue';
 import { useUserProfile } from '@/composables/useUserProfile'; // Import the composable
 
 const userStore = useUserStore();

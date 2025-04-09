@@ -1,13 +1,8 @@
 <template>
 	<view class="relative bg-white min-h-screen">
-		<Header
-			title="添加打野点位"
-			rightIcon="i-lucide-check"
-			@rightClick="submitForm"
-		/>
-
 		<!-- 表单内容区 -->
-		<view class="pt-140rpx pb-120rpx px-30rpx">
+		<view class="pb-120rpx px-30rpx">
+			<text class="py-3 block text-xl c-comet-800 pb-10" :class="$isH5 ? '' : 'pt-65px'">新增打野点</text>
 			<uni-forms ref="formRef" :model="formData" :rules="rules" class="space-y-40rpx" label-position="top">
 				<!-- 名称输入 -->
 				<uni-forms-item name="title" label="名称">
@@ -78,6 +73,8 @@
 				<uni-forms-item name="productTypes" label="物产种类">
 					<TagInput v-model="formData.productTypes" placeholder="输入标签后按回车或点击添加" :max-tags="8" />
 				</uni-forms-item>
+
+				<button type="primary" class="!bg-primary-500" @click="submitForm">立即发布</button>
 			</uni-forms>
 		</view>
 	</view>

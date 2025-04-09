@@ -1,6 +1,6 @@
 <template>
-	<drawer :visible="innerVisible" title="标签筛选" @update:visible="handleVisibleChange">
-		<scroll-view scroll-y class="py-6">
+	<uni-drawer ref="drawerRef" title="标签筛选" @change="handleVisibleChange">
+		<scroll-view scroll-y class="py-6" :class="$isH5 ? '' : 'pt-65px'">
 			<view v-for="category in categories" :key="category.id" class="mb-10 px-4">
 				<view class="text-xs c-comet-400 mb-3">{{ category.name }}</view>
 				<view class="flex flex-wrap gap-[20rpx]">
@@ -18,12 +18,11 @@
 				</view>
 			</view>
 		</scroll-view>
-	</drawer>
+	</uni-drawer>
 </template>
 
 <script setup>
 import { ref, defineProps, defineEmits, watch } from 'vue'
-import Drawer from './Drawer.vue'
 
 const props = defineProps({
 	visible: {
@@ -34,18 +33,21 @@ const props = defineProps({
 
 const emit = defineEmits(['update:visible', 'confirm'])
 
-// 内部控制抽屉显示状态
-const innerVisible = ref(false)
+// 抽屉组件引用
+const drawerRef = ref(null)
 
 // 监听外部 visible 属性变化
 watch(() => props.visible, (newVal) => {
-	innerVisible.value = newVal
+	if (newVal) {
+		drawerRef.value?.open()
+	} else {
+		drawerRef.value?.close()
+	}
 })
 
 // 处理抽屉显示状态变化
 const handleVisibleChange = (val) => {
-	innerVisible.value = val
-	emit('update:visible', val)
+	if(!val) emit('update:visible', false)
 }
 
 // 分类和标签数据

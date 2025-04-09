@@ -1,63 +1,58 @@
 <template>
 	<view class="profile-page bg-comet-50 min-h-screen"> 
-		<view class="bg-white">
+		<view class="bg-white" :class="$isH5 ? '' : 'pt-65px'">
 			<!-- 用户信息头部 -->
 			<UserProfileHeader 
+				ref="userProfileHeader"
 				:user-info="userInfo" 
-				:activity-data="activityData" 
 				:published-count="publishedCount"
 				@avatarClick="handleAvatarClick" 
-			></UserProfileHeader>
+			>
+			</UserProfileHeader>
 		</view>
-		
 		<!-- Tab 视图 -->
-		<TabbedView :tabs="tabList" v-model="currentTab">
-			<!-- 收藏列表插槽 -->
-			<template #tab-0>
-				<view class="content-container p-3">
-					<Loading v-if="isLoadingFavorites" text="加载收藏中" />
-					<CardGridList 
-						v-else
-						:items="favoriteList"
-						:card-component="markRaw(LocationCard)" 
-						empty-text="暂无收藏" 
-					></CardGridList> <!-- Correctly closed tag -->
-				</view>
-			</template>
+		<TabbedView :tabs="tabList" v-model="currentTab"></TabbedView>
+		<view class="tab-content">
+			<!-- 收藏列表 -->
+			<view v-show="currentTab === 0" class="content-container p-3">
+				<Loading v-if="isLoadingFavorites" text="加载收藏中" />
+				<CardGridList 
+					v-else
+					card-type="LocationCard"
+					:items="favoriteList"
+					:card-component="markRaw(LocationCard)" 
+					empty-text="暂无收藏" 
+				></CardGridList>
+			</view>
 
-			<!-- 发布列表插槽 -->
-			<template #tab-1>
-				<view class="content-container p-3">
-					<Loading v-if="isLoadingPublished" text="加载发布中" />
-					<CardGridList 
-						v-else
-						:items="publishedList"
-						:card-component="markRaw(LocationCard)" 
-						empty-text="暂无发布" 
-					></CardGridList> <!-- Correctly closed tag -->
-				</view>
-			</template>
+			<!-- 发布列表 -->
+			<view v-show="currentTab === 1" class="content-container p-3">
+				<Loading v-if="isLoadingPublished" text="加载发布中" />
+				<CardGridList 
+					v-else
+					card-type="LocationCard"
+					:items="publishedList"
+					:card-component="markRaw(LocationCard)" 
+					empty-text="暂无发布" 
+				></CardGridList>
+			</view>
 
-			<!-- 评论列表插槽 -->
-			<template #tab-2>
-				<view class="content-container p-3">
-					<Loading v-if="isLoadingComments" text="加载评论中" />
-					<view v-else class="space-y-3">
-						<CommentItem v-for="comment in commentList" :key="comment.id" :comment="comment" /> <!-- Use commentList from composable -->
-						<!-- Corrected empty state check with && -->
-						<view v-if="!isLoadingComments &amp;&amp; commentList.length === 0" class="text-center py-10 text-gray-400">暂无评论</view>
-					</view>
+			<!-- 评论列表 -->
+			<view v-show="currentTab === 2" class="content-container p-3">
+				<Loading v-if="isLoadingComments" text="加载评论中" />
+				<view v-else class="space-y-3">
+					<CommentItem v-for="comment in commentList" :key="comment.id" :comment="comment" />
+					<view v-if="!isLoadingComments && commentList.length === 0" class="text-center py-10 text-gray-400">暂无评论</view>
 				</view>
-			</template>
-		</TabbedView>
-
+			</view>
+		</view>
 	</view>
 </template>
 
 <script setup>
-import { ref, computed, markRaw, watch } from 'vue'; // Import watch
+import { ref, computed, markRaw, watch, getCurrentInstance } from 'vue'; // Import watch
 import { useUserStore } from '@/store/modules/user';
-import { onShow } from '@dcloudio/uni-app';
+import { onShow, onReady, onUnload } from '@dcloudio/uni-app';
 import LocationCard from '@/components/common/LocationCard.vue'; 
 import UserProfileHeader from '@/components/common/UserProfileHeader.vue';
 import TabbedView from '@/components/common/TabbedView.vue'; 
@@ -67,7 +62,8 @@ import Loading from '@/components/Loading.vue';
 import { useUserProfile } from '@/composables/useUserProfile'; // Import the composable
 
 const userStore = useUserStore();
-const currentTab = ref(0); 
+const currentTab = ref(0);
+const chartRenderer = ref(null);
 const tabList = ref([ 
 	{ name: '收藏' },
 	{ name: '发布' },
@@ -133,6 +129,20 @@ watch(currentTab, (newTabIndex) => {
 		loadTabData(newTabIndex);
 	}
 }, { immediate: true }); // Load data for the initial tab immediately
+
+// 监听数据变化，触发重绘
+watch(() => activityData.value, (newVal) => {
+	if (chartRenderer.value && newVal && newVal.length > 0) {
+		chartRenderer.value.setActivityData(newVal);
+	}
+}, { deep: true });
+
+// 组件卸载时清理
+onUnload(() => {
+	if (chartRenderer.value) {
+		chartRenderer.value.destroy();
+	}
+});
 
 // onShow: Ensure user info is fresh and load initial tab data if logged in
 onShow(() => {

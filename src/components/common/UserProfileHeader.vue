@@ -22,45 +22,27 @@
 				{{ userInfo.location || '未知地点' }}
 			</view>
 		</view>
-
-		<!-- 统计区域 -->
-		<view class="stats-container flex items-end justify-center px-6 pb-6">
-			<!-- 发布点位 数量 -->
-			<view class="check-ins mr-6 text-right">
-				<view class="label text-xs text-gray-400 uppercase tracking-wider mb-1">发布点位</view>
-				<view class="value text-4xl font-bold text-comet-800 leading-none">
-					{{ publishedCount }}
-				</view>
-			</view>
-			<!-- 活跃度图表 -->
-			<ActivityChart :activity-data="activityData" />
-		</view>
 	</view>
 </template>
 
 <script setup>
 import { defineProps, defineEmits } from 'vue';
-import ActivityChart from '@/components/ActivityChart.vue'; // 确保 ActivityChart 在正确路径
 
 const props = defineProps({
-  userInfo: {
-    type: Object,
-    default: () => ({})
-  },
-  activityData: {
-    type: Array,
-    default: () => []
-  },
-  publishedCount: {
-    type: Number,
-    default: 0
-  }
+	userInfo: {
+		type: Object,
+		default: () => ({})
+	},
+	publishedCount: {
+		type: Number,
+		default: 0
+	}
 });
 
 const emit = defineEmits(['avatarClick']);
 
 const handleAvatarClick = () => {
-  emit('avatarClick');
+	emit('avatarClick');
 };
 </script>
 

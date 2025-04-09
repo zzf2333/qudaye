@@ -133,7 +133,7 @@ export function useLocations(options) {
                 isLoading.value = false;
                 console.log('Fetched locations:', locationsWithDistance.length);
                 resolve(locationsWithDistance); // Resolve the promise
-            }, 4000);
+            }, 2000);
         });
     };
 

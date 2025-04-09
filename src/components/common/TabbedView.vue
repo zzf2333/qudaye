@@ -12,14 +12,6 @@
 					:style="{ width: indicatorWidth }"></view>
 			</view>
 		</view>
-
-		<!-- 内容区域 -->
-		<view class="tab-content">
-			<!-- Use dynamic component or v-show based on slots -->
-			<slot :name="`tab-${modelValue}`">
-				<!-- Default content if slot is not provided -->
-			</slot>
-		</view>
 	</view>
 </template>
 

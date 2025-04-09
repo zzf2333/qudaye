@@ -51,7 +51,7 @@
 		}
 	},
 	"mp-weixin": {
-		"appid": "touristappid",
+		"appid": "wx80b4d8b122a0394a",
 		"setting": {
 			"urlCheck": false,
 			"es6": true,
@@ -59,7 +59,15 @@
 			"minified": true		
 		},
 		"usingComponents": true,
-		"permission": {}
+		"permission": {
+			"scope.userLocation": {
+				"desc": "你的位置信息将用于获取详细地址"
+			}
+		},
+		"requiredPrivateInfos": [
+			"getLocation",
+			"chooseLocation"
+		]
 	},
 	"mp-alipay": {
 		"usingComponents": true

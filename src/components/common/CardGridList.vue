@@ -1,18 +1,21 @@
 <template>
 	<view class="card-grid-list">
 		<view v-if="items && items.length > 0" :class="gridClass">
-			<component v-for="item in items" :key="item[keyProp]" :is="cardComponent" :item="item" />
+			<template v-for="item in items" :key="item[keyProp]">
+				<LocationCard v-if="cardType === 'LocationCard'" :item="item" />
+				<CommentItem v-else-if="cardType === 'CommentItem'" :item="item" />
+				<!-- Add more card types as needed -->
+			</template>
 		</view>
 		<NoData v-else :text="emptyText" />
 	</view>
 </template>
 
 <script setup>
-import { defineProps, markRaw } from 'vue';
+import { defineProps } from 'vue';
 import NoData from '../NoData.vue';
-// Note: For <component :is="...">, it's generally recommended to pass the actual component object.
-// If passing component name as string, ensure it's globally registered or locally imported and registered.
-// Passing the component object directly via props is often safer.
+import LocationCard from './LocationCard.vue';
+import CommentItem from './CommentItem.vue';
 
 const props = defineProps({
 	items: {
@@ -20,12 +23,10 @@ const props = defineProps({
 		required: true,
 		default: () => []
 	},
-	// Pass the actual imported component object here
-	cardComponent: {
-		type: Object, // Or String if using globally registered names
+	cardType: {
+		type: String,
 		required: true,
-		// markRaw is important if passing component objects to prevent reactivity overhead
-		default: () => markRaw({})
+		validator: (value) => ['LocationCard', 'CommentItem'].includes(value)
 	},
 	keyProp: {
 		type: String,

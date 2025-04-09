@@ -1,15 +1,26 @@
 <template>
-	<view class="fixed w-full z-1">
-		<view class="flex bg-white h-100rpx justify-between items-center shadow-lg c-comet-600">
-			<view v-if="leftIcon" class="ml-2 w-36rpx h-36rpx cursor-pointer font-bold" :class="leftIcon" @tap="onLeftClick"></view>
-			<view class="flex-1 mx-4">
-				<slot name="center">
-					<text class="text-md">{{ title }}</text>
-				</slot>
-			</view>
-			<view class="mr-2 w-36rpx h-36rpx cursor-pointer font-bold" :class="rightIcon" @tap="onRightClick"></view>
+	<uni-nav-bar
+		:fixed="true"
+		:status-bar="true"
+		:border="false"
+		:height="$isH5 ? '44px' : '48px'"
+		shadow
+	>
+		<template #left>
+			<view v-if="leftIcon" class="w-36rpx h-36rpx cursor-pointer" :class="leftIcon" @click="onLeftClick"></view>
+		</template>
+		
+		<view class="flex-1 flex items-center" v-if="$slots.center">
+			<slot name="center"></slot>
 		</view>
-	</view>
+		<view class="flex-1 flex items-center" v-else>
+			<text class="text-base font-medium">{{ title }}</text>
+		</view>
+		
+		<template #right>
+			<view v-if="rightIcon" class="w-36rpx h-36rpx cursor-pointer" :class="rightIcon" @click="onRightClick"></view>
+		</template>
+	</uni-nav-bar>
 </template>
 
 <script setup>
@@ -24,7 +35,7 @@ const props = defineProps({
 	},
 	rightIcon: {
 		type: String,
-		default: 'i-lucide-map'
+		default: ''
 	}
 })
 

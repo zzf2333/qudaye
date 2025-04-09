@@ -1,5 +1,5 @@
 <template>
-	<view :class="['bg-gray-50 overflow-auto', $isH5 ? 'h-[calc(100vh-100rpx-50px)]' : 'h-[calc(100vh-100rpx)]']">
+	<view :class="['bg-gray-50 overflow-auto']">
 		<!-- 列表内容 -->
 		<view class="p-30rpx space-y-30rpx" v-if="locations.length > 0">
 			<view class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200" 
@@ -10,7 +10,7 @@
 					<!-- 特产信息 -->
 					<view class="absolute bottom-10rpx right-10rpx flex flex-wrap gap-10rpx justify-end max-w-[70%]">
 						<view v-for="(tag, tagIndex) in item.specialty" :key="tagIndex"
-							class="px-10rpx py-5rpx bg-primary-500 bg-opacity-50 rounded-sm">
+							class="px-10rpx py-5rpx bg-primary-500 bg-opacity-65 rounded-sm">
 							<text class="text-xs text-white">{{ tag }}</text>
 						</view>
 					</view>

@@ -6,7 +6,7 @@
 			@regionchange="handleRegionChange" @updated="handleMapUpdated"></map>
 
 		<!-- 定位按钮 -->
-		<view v-if="showLocationButton" :class="['fixed right-20rpx z-10', locationButtonPositionClass]"
+		<view v-if="showLocationButton" :class="['fixed right-10rpx z-10', locationButtonPositionClass]"
 			@click="moveToUserLocation">
 			<!-- Consider using an icon font or SVG for better control -->
 			<image src="/static/icon/location.png" class="w-120rpx h-120rpx" /> <!-- Slightly smaller -->
@@ -19,14 +19,6 @@
 
 <script setup>
 import { ref, watch, defineProps, defineEmits, computed, onMounted, getCurrentInstance } from 'vue'; // Import getCurrentInstance
-// Assuming a utility for platform check exists or create one
-const $isH5 = computed(() => {
-	// Basic H5 check, refine as needed
-	// #ifdef H5
-	return true;
-	// #endif
-	return false;
-});
 
 
 const props = defineProps({
@@ -154,7 +146,8 @@ const moveToUserLocation = () => {
 // --- Computed Properties ---
 
 const locationButtonPositionClass = computed(() => {
-	return $isH5.value ? 'bottom-120rpx' : 'bottom-40rpx';
+    const { proxy } = getCurrentInstance();
+    return proxy.$isH5 ? 'bottom-240rpx' : 'bottom-140rpx';
 });
 
 </script>

@@ -2,22 +2,17 @@
 	<view class="relative">
 		<Header
 			leftIcon="i-lucide-filter"
-			:rightIcon="viewMode !== 'map' ? 'i-lucide-map' : 'i-lucide-layout-list'"
 			@leftClick="showFilterDrawer"
-			@rightClick="toggleViewMode"
 		>
 			<template #center>
 				<!-- Display loading state or location count -->
-				<view v-if="viewMode === 'map'" class="z-1 text-xs">
-					<text v-if="isLoading">加载中...</text>
-					<text v-else>附近有 {{ locationList.length }} 个点位</text>
+				<view v-if="viewMode === 'map'" class="z-1 text-xs flex items-center">
+					<text>附近有 {{ locationList.length }} 个点位</text>
 				</view>
-				<view v-else class="flex-1 mx-4">
-					<view class="flex items-center rounded-full px-4 py-2">
-						<view class="i-lucide-search w-36rpx h-36rpx mr-2"></view>
-						<!-- Use debounce or trigger fetch on change/blur -->
-						<input type="text" v-model="searchQuery" placeholder="搜索物质名称" class="flex-1 text-xs outline-none" @input="handleSearchInput" />
-					</view>
+				<view v-else class="flex items-center rounded-full px-4 py-3">
+					<view class="i-lucide-search w-36rpx h-36rpx mr-2"></view>
+					<!-- Use debounce or trigger fetch on change/blur -->
+					<input type="text" v-model="searchQuery" placeholder="搜索物质名称" class="flex-1 text-xs outline-none" @input="handleSearchInput" />
 				</view>
 			</template>
 		</Header>
@@ -25,6 +20,15 @@
 		<!-- 筛选抽屉 -->
 		<filter-drawer v-model:visible="filterVisible" :selected-filters="selectedFilters" @confirm="onFilterConfirm" />
 		 
+		<!-- 视图切换按钮 -->
+		<view 
+			class="fixed right-30rpx text-white z-50 bg-primary-500 rounded-full p-3 shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300"
+			:class="$isH5 ? 'bottom-140rpx' : 'bottom-60rpx'"
+			@click="toggleViewMode"
+		>
+			<view :class="[viewMode !== 'map' ? 'i-lucide-map' : 'i-lucide-layout-list', 'w-38rpx h-38rpx']"></view>
+		</view>
+
 		<!-- 地图视图 (Using MapViewer) -->
 		<view v-if="viewMode === 'map'" class="w-full h-full fixed"> 
 			<MapViewer 
@@ -41,14 +45,14 @@
 		</view>
 		
 		<!-- 列表视图 -->
-		<view v-else class="transition-all duration-300 ease-in-out pt-100rpx relative"> 
+		<view v-else class="transition-all duration-300 ease-in-out relative" > 
 			<!-- Show loading indicator -->
 			<location-list 
 				:locations="locationList"
 				:current-latitude="latitude" 
 				:current-longitude="longitude" 
 				@select="onLocationSelect" 
-			></location-list> <!-- Correctly closed tag -->
+			></location-list>
 		</view>
 	</view>
 </template>

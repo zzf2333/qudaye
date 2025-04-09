@@ -1,5 +1,5 @@
 <template>
-	<view class="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
+	<view class="bg-white rounded-lg shadow-md overflow-hidden mb-4 animate-pulse">
 		<!-- 图片占位 -->
 		<view class="h-300rpx w-full bg-gray-200"></view>
 		

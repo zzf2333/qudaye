@@ -23,19 +23,6 @@
 							收藏
 						</view>
 					</view>
-					
-					<!-- 评分与距离 -->
-					<view class="flex items-center text-xs text-comet-500 mb-2">
-						<view class="flex items-center mr-3">
-							<!-- 模拟评分 -->
-							<view class="flex items-center">
-								<view v-for="i in 3" :key="i" class="w-24rpx h-24rpx mx-2rpx">
-									<view :class="[i <= Math.floor(spotDetails.difficulty || 0) ? 'bg-primary-500' : 'bg-comet-100', 'rounded-full w-full h-full']"></view>
-								</view>
-							</view>
-							<text class="ml-2">低</text>
-						</view>
-					</view>
 
 					<!-- 分类与难度 -->
 					<view class="flex items-center text-sm mb-2">
@@ -52,16 +39,8 @@
 						</view>
 					</view>
 
-					<!-- 物产种类 -->
-					<view v-if="spotDetails.productTypes.length > 0" class="product-types flex flex-wrap gap-2 mb-3">
-						<view v-for="ptype in spotDetails.productTypes" :key="ptype"
-							class="bg-primary-50 text-primary-500 px-2 py-1 rounded text-xs">
-							{{ ptype }}
-						</view>
-					</view>
-
 					<!-- 距离 -->
-					<view class="flex items-center justify-between text-xs text-comet-500 mb-4">
+					<view class="flex items-center justify-between text-xs text-comet-500 mb-2">
 						<view class="flex items-center mr-3">
 							<view class="i-lucide-map-pin mr-10rpx"></view>
 							<text class="flex-1">{{ spotDetails.address }}</text>
@@ -72,19 +51,26 @@
 						</view>
 					</view>
 
+					<!-- 物产种类 -->
+					<view v-if="spotDetails.productTypes.length > 0" class="product-types flex flex-wrap gap-2 mb-3">
+						<view v-for="ptype in spotDetails.productTypes" :key="ptype"
+							class="bg-primary-50 text-primary-500 px-2 py-1 rounded text-xs">
+							{{ ptype }}
+						</view>
+					</view>
+
 					<!-- 图片展示 -->
 					<view class="image-gallery mb-3">
-						<view v-if="displayImages.length > 0" class="main-image mb-2">
-							<image :src="displayImages[0]" mode="aspectFill"
-								class="w-full h-200px rounded-lg bg-gray-200" @tap="previewImage(0)"></image>
-						</view>
 						<scroll-view scroll-x class="whitespace-nowrap" :show-scrollbar="false" enhanced>
 							<image v-for="(img, index) in displayImages" :key="index" :src="img"
-								mode="aspectFill" class="w-80px h-80px rounded-lg inline-block mr-2 bg-gray-200"
-								@tap="previewImage(index + 1)">
+								mode="aspectFill" class="w-80% h-300rpx inline-block mr-2 bg-gray-200 rounded-lg"
+								@tap="previewImage(index)">
 							</image>
 						</scroll-view>
 					</view>
+
+					<!-- 描述 -->
+					<text class="text-comet-400 text-sm block mb-3 mt-3">{{ spotDetails.description }}</text>
 
 					<!-- 标签 -->
 					<view v-if="spotDetails.tags.length > 0" class="tags flex flex-wrap gap-2 mb-3">
@@ -93,9 +79,6 @@
 							#{{ tag }}
 						</view>
 					</view>
-
-					<!-- 描述 -->
-					<text class="text-comet-400 text-sm block mb-3 mt-3">{{ spotDetails.description }}</text>
 
 					<!-- 去过的人 (占位) -->
 					<!-- <view class="visitors flex items-center text-sm text-comet-500 mb-4">
@@ -122,6 +105,10 @@
 			<view class="recommendations-card bg-white">
 				<view class="flex justify-between items-center mb-3 p-3">
 					<text class="text-30 font-bold">{{ spotDetails.recommendations.length }}条评论</text>
+					<view class="flex items-center py-1.5 rounded-sm  cursor-pointer" @tap="openCommentDialog">
+						<view class="i-lucide-square-pen mr-1"></view>
+						<text class="text-sm">发表评论</text>
+					</view>
 				</view>
 				<view class="comment-list space-y-4">
 					<!-- 使用 CommentItem 组件渲染评论 -->
@@ -131,6 +118,7 @@
 				</view>
 			</view>
 		</view>
+		<CommentDialog ref="commentDialog" @submit="handleCommentSubmit" />
 	</view>
 </template>
 
@@ -141,9 +129,24 @@ import Header from '@/components/Header.vue';
 import CommentItem from '@/components/common/CommentItem.vue';
 import MapViewer from '@/components/common/MapViewer.vue'; // 导入 MapViewer
 import NoData from '@/components/NoData.vue';
+import CommentDialog from '@/components/common/CommentDialog.vue';
 import { categories, seasonOptions, difficultyLevels } from '@/config/categories';
 
 const spotId = ref(null);
+const commentDialog = ref(null);
+
+const openCommentDialog = () => {
+  commentDialog.value?.open();
+};
+
+const handleCommentSubmit = (content) => {
+  // TODO: 实现评论提交逻辑
+  console.log('提交评论：', content);
+  uni.showToast({
+    title: '评论发布成功',
+    icon: 'success'
+  });
+};
 
 // 模拟地点详情数据
 // 限制显示的图片数量为 6 张
@@ -179,7 +182,44 @@ const spotDetails = ref({
 	rating: 4.5,
 	distance: 2.1,
 	visitorCount: 82,
-	recommendations: []
+	recommendations: [
+		{
+			id: 1,
+			user: {
+				avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60',
+				name: '钓鱼达人'
+			},
+			content: '这个地方真是个钓鱼的好去处！水质清澈，环境安静，特别适合周末来放松。我在这里钓到了不少鲫鱼，个头都不小。建议大家带上遮阳伞，夏天中午太阳还是很晒的。',
+			rating: 5,
+			createdAt: '2024-01-15',
+			images: [
+				'https://images.unsplash.com/photo-1516992654410-9309d4587e94?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8ZmlzaGluZ3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60'
+			]
+		},
+		{
+			id: 2,
+			user: {
+				avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60',
+				name: '野趣生活'
+			},
+			content: '带着家人来野餐，孩子们玩得很开心！这里的野菜特别新鲜，我们采了一些回去做汤，味道很鲜美。傍晚的景色特别美，还看到了落日，值得一来！',
+			rating: 4,
+			createdAt: '2024-01-20',
+			images: [
+				'https://images.unsplash.com/photo-1526999185883-1925e82a0e27?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGljbmljfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60'
+			]
+		},
+		{
+			id: 3,
+			user: {
+				avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60',
+				name: '自然探索者'
+			},
+			content: '这里的环境保护得很好，空气清新，适合亲近自然。不过建议大家带好防蚊喷雾，夏天蚊虫还是比较多的。总的来说是个放松身心的好地方！',
+			rating: 4,
+			createdAt: '2024-01-25'
+		}
+	]
 });
 
 // 计算属性，用于显示分类、难度和季节的标签
@@ -245,19 +285,19 @@ async function fetchSpotDetails(id) {
 		position: absolute;
 		left: 0;
 		right: 0;
-		height: 80rpx;
+		height: 40rpx;
 		pointer-events: none;
 		z-index: 1;
 	}
 
 	&::before {
 		top: 0;
-		background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), transparent);
+		background: linear-gradient(to bottom, rgba(255, 255, 255, 1), transparent);
 	}
 
 	&::after {
 		bottom: 0;
-		background: linear-gradient(to top, rgba(255, 255, 255, 0.9), transparent);
+		background: linear-gradient(to top, rgba(255, 255, 255, 1), transparent);
 	}
 }
 </style>

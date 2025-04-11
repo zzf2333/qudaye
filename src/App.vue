@@ -1,15 +1,12 @@
-<script>
-export default {
-	onLaunch: function () {
-		console.log('App Launch')
-	},
-	onShow: function () {
-		console.log('App Show')
-	},
-	onHide: function () {
-		console.log('App Hide')
-	},
-}
+<script setup>
+import { useUserStore } from '@/store/modules/user';
+import { onLaunch } from '@dcloudio/uni-app';
+
+const userStore = useUserStore();
+
+onLaunch(() => {
+	userStore.checkLoginStatus()
+})
 </script>
 
 <style lang="scss">

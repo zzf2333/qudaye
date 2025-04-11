@@ -13,7 +13,7 @@
         <view class="flex items-center justify-center relative">
             <input type="text" v-model="inputValue" :placeholder="placeholder" @keypress.enter.prevent="addTag"
                 class="input flex-1" />
-            <view @click="addTag" class="i-lucide-square-plus text-2xl c-comet-400 m-auto absolute right-20"></view>
+            <view @click="addTag" class="i-lucide-square-plus text-2xl c-comet-600 m-auto z-11 absolute right-20"></view>
         </view>
     </view>
 </template>
@@ -44,6 +44,8 @@ const inputValue = ref('')
 const addTag = () => {
     const value = inputValue.value.trim()
     if (!value) return
+
+    console.log(value)
 
     if (props.modelValue.includes(value)) {
         uni.showToast({

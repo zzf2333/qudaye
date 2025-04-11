@@ -5,7 +5,7 @@
 				<!-- Display the selected address using the modelValue prop -->
 				<input class="w-full outline-none text-sm" :value="modelValue" :placeholder="placeholder" disabled />
 			</view>
-			<view class="i-lucide-map-pin text-comet-500 w-36rpx h-36rpx"></view>
+			<view class="i-lucide-map-pin text-comet-600 text-2xl"></view>
 		</view>
 	</view>
 </template>
@@ -34,7 +34,6 @@ const openMap = () => {
 		success: (res) => {
 			// Update the address string via v-model
 			emit('update:modelValue', res.address);
-
 			// Emit the full location details
 			emit('locationSelected', {
 				address: res.address,
